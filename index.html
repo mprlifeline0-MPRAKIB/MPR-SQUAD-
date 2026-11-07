@@ -42,7 +42,15 @@ th{background:#edf2f8;color:#34465a;position:sticky;top:0}
 .profile-card .muted{color:#d8e6f4}.profile-card h3{margin:0 0 4px}.profile-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.profile-actions button{padding:7px 10px;font-size:12px}
 .lock-screen{position:fixed;inset:0;background:linear-gradient(145deg,#10243c,#1d4e78);z-index:30;display:none;align-items:center;justify-content:center;padding:20px;color:white}.lock-screen.show{display:flex}.lock-box{background:white;color:#172536;border-radius:22px;padding:24px;width:min(360px,100%);text-align:center;box-shadow:0 20px 60px #0005}.lock-box .lock-logo{font-size:42px}.lock-box input{text-align:center;font-size:24px;letter-spacing:8px;margin:12px 0}.hint{font-size:12px;color:#66758a;line-height:1.5}
 @media(max-width:580px){.profile-card{align-items:flex-start}.avatar{width:70px;height:70px}}
-.brand-banner-wrap{background:#fff;border:1px solid #e3c477;border-radius:14px;overflow:hidden;margin:8px 0 16px;box-shadow:0 4px 16px #142b4815}.brand-banner{display:block;width:100%;height:auto}.profile-card{background:linear-gradient(135deg,#102b55,#1c4b77);border:1px solid #d7b45a}.avatar{width:82px;height:100px;border-radius:12px;object-fit:cover;border:2px solid #d7b45a}@media print{.brand-banner{width:100%}}
+.brand-banner-wrap{background:#fff;border:1px solid #e3c477;border-radius:14px;overflow:hidden;margin:8px 0 16px;box-shadow:0 4px 16px #142b4815}.brand-banner{display:block;width:100%;height:auto}.profile-card{background:linear-gradient(135deg,#102b55,#1c4b77);border:1px solid #d7b45a}.avatar{width:82px;height:100px;border-radius:12px;object-fit:cover;border:2px solid #d7b45a}.avatar-wrap{width:82px;flex-shrink:0;text-align:center}.avatar-caption{margin-top:5px;color:#fff;font-size:12px;font-weight:800;letter-spacing:1.1px;text-shadow:0 1px 3px #0008}@media print{.brand-banner{width:100%}}
+
+/* Smooth, unobtrusive screen transitions */
+.screen.active{animation:mprScreenEnter .30s cubic-bezier(.2,.75,.25,1) both;will-change:opacity,transform}
+@keyframes mprScreenEnter{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+.tile,.folder{transition:transform .18s ease,box-shadow .18s ease}
+.tile:active,.folder:active{transform:scale(.975)}
+@media(prefers-reduced-motion:reduce){.screen.active{animation:none}.tile,.folder{transition:none}}
+
 </style>
 </head>
 <body>
@@ -59,7 +67,7 @@ th{background:#edf2f8;color:#34465a;position:sticky;top:0}
     <button class="tile other" onclick="showScreen('customScreen')"><span class="ico">📁</span>অন্যান্য</button>
   </div>
   <div class="card"><h3>এই মাসের সংক্ষিপ্ত হিসাব</h3><div id="homeStats" class="totalgrid"></div></div>
-  <div class="profile-card"><img id="profilePhotoView" class="avatar" alt="MP RAKIB sordar"><div style="min-width:0;flex:1"><h3 id="profileNameView">MP RAKIB sordar</h3><div id="profileRoleView" class="muted">MPR SQUAD • P.C.S Work Details</div><div class="muted" style="font-size:12px;margin-top:5px">☎ Contact: 019090-62744</div><div class="muted" style="font-size:12px">✉ mpr.lifeline0@gmail.com</div><div class="profile-actions"><span class="muted" style="color:#d8e6f4">ছবি স্থায়ীভাবে সংরক্ষিত</span></div></div></div>
+  <div class="profile-card"><div class="avatar-wrap"><img id="profilePhotoView" class="avatar" alt="MP RAKIB sordar"><div class="avatar-caption">MP RAKIB</div></div><div style="min-width:0;flex:1"><h3 id="profileNameView">MP RAKIB sordar</h3><div id="profileRoleView" class="muted">MPR SQUAD • P.C.S Work Details</div><div class="muted" style="font-size:12px;margin-top:5px">☎ Contact: 019090-62744</div><div class="muted" style="font-size:12px">✉ mpr.lifeline0@gmail.com</div><div class="profile-actions"><span class="muted" style="color:#d8e6f4">ছবি স্থায়ীভাবে সংরক্ষিত</span></div></div></div>
 </section>
 
 <section id="dutyScreen" class="screen">
@@ -147,7 +155,7 @@ function lockApp(){if(!db.security.pin)return alert('আগে প্রোফ�
 function unlockApp(){if($('unlockPin').value===db.security.pin){$('lockScreen').classList.remove('show');$('unlockError').textContent=''}else{$('unlockError').textContent='PIN সঠিক নয়, আবার চেষ্টা করুন।';$('unlockPin').value=''}}
 
 function num(v){return Number(v)||0}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');$('menu').classList.remove('open');if(id==='expenseScreen')renderFolders();if(id==='dutyScreen')renderDuty();if(id==='billScreen')renderBills();if(id==='payScreen')renderPay();if(id==='customScreen')renderCustom();renderHome()}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));const nextScreen=$(id);nextScreen.classList.remove('active');void nextScreen.offsetWidth;nextScreen.classList.add('active');$('menu').classList.remove('open');if(id==='expenseScreen')renderFolders();if(id==='dutyScreen')renderDuty();if(id==='billScreen')renderBills();if(id==='payScreen')renderPay();if(id==='customScreen')renderCustom();renderHome()}
 function goHome(){showScreen('homeScreen')}
 function toggleMenu(){$('menu').classList.toggle('open')}
 function monthVal(id){return $(id).value||today().slice(0,7)}
